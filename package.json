@@ -31,6 +31,9 @@
     "typescript": "^3.5.3",
     "webpack": "~4.39.1"
   },
+  "resolutions": {
+    "js-yaml": "^3.13.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
