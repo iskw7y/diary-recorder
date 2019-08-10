@@ -11,8 +11,8 @@
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
   },
   "dependencies": {
+    "idb": "^4.0.4",
     "source-map-support": "^0.5.12",
-    "sqlite": "^3.0.3",
     "vue": "^2.6.10"
   },
   "devDependencies": {

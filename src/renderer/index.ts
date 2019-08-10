@@ -1,20 +1,26 @@
-import path from 'path';
 import Vue from 'vue';
-import sqlite from 'sqlite';
+import { openDB, DBSchema } from 'idb';
 import Home from './pages/home.vue';
 
-async function main(dir: string) {
-  const filename = path.join(dir, 'diary-recorder.db');
-  const db = await sqlite.open(filename);
-  if ((await db.get(`SELECT name FROM sqlite_master WHERE name='counter'`)) == null) {
-    await db.run(`CREATE TABLE counter (id TEXT, value INTEGER)`);
-    await db.run(`INSERT INTO counter (id, value) VALUES ('dummy', 0)`);
-  }
-  await db.run(`UPDATE counter SET value=value+1 WHERE id='dummy'`);
-  console.log(await db.get(`SELECT * FROM counter WHERE id='dummy'`));
+interface DB extends DBSchema {
+  counter: {
+    key: string;
+    value: number;
+  };
 }
 
-main(process.env.PORTABLE_EXECUTABLE_DIR || '.');
+async function main() {
+  const db = await openDB<DB>('diary-recorder', 1, {
+    upgrade(db) {
+      db.createObjectStore('counter');
+    },
+  });
+  const value = ((await db.get('counter', 'dummy')) || 0) + 1;
+  await db.put('counter', value, 'dummy');
+  console.log(value);
+}
+
+main();
 
 new Vue({
   el: '#app',
